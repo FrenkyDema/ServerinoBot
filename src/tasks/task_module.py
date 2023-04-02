@@ -4,7 +4,7 @@ from logging import Logger
 import discord
 import mcstatus
 
-from config_module import MC_SERVER_IP, MC_SERVER_PORT
+from src.config.config_module import MC_SERVER_IP, MC_SERVER_PORT
 
 
 class BotTask:
