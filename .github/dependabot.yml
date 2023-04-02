@@ -15,7 +15,6 @@ updates:
       - "dependencies"
   - package-ecosystem: "pip"
     directory: ".github/"
-    # Check for updates once a week
     schedule:
       interval: daily
     labels:
