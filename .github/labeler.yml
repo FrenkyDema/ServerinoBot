@@ -1,0 +1,20 @@
+documentation:
+  - .github/*
+
+server:
+  - src/server/*
+
+config:
+  - src/config/*
+
+tasks:
+  - src/tasks/*
+
+discord:
+  - src/discord/*
+
+workflows:
+  - .github/workflows/*
+
+resources:
+  - src/resources/*
