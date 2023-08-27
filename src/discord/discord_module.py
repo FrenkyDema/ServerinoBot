@@ -8,7 +8,7 @@ import discord
 import mcstatus
 from discord.ext import commands
 
-from src.config.config_module import GENERAL_CHANNEL_ID, TOKEN
+from src.config.config_module import GENERAL_CHANNEL_ID, GUILD_ID, MC_SERVER_PORT, TOKEN
 from src.server.ngrok_module import Ngrok
 from src.tasks.task_module import BotTask
 
@@ -22,7 +22,8 @@ class DiscordBot(discord.Client):
         self.logger.setLevel(logging.INFO)
 
         # Formatter per i log
-        log_formatter = logging.Formatter('%(asctime)s %(levelname)s [%(name)s]: %(message)s')
+        log_formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s [%(name)s]: %(message)s')
 
         # Log su console
         console_handler = logging.StreamHandler(sys.stdout)
@@ -48,7 +49,8 @@ class DiscordBot(discord.Client):
             log_file_name = os.path.join(log_folder, 'bot.log')
             if os.path.exists(log_file_name):
                 with zipfile.ZipFile(os.path.join(log_folder, 'bot_log.zip'), 'w') as zip_file:
-                    zip_file.write(log_file_name, os.path.basename(log_file_name), compress_type=zipfile.ZIP_DEFLATED)
+                    zip_file.write(log_file_name, os.path.basename(
+                        log_file_name), compress_type=zipfile.ZIP_DEFLATED)
                 os.remove(log_file_name)
 
         atexit.register(compress_log)
@@ -64,27 +66,42 @@ class DiscordBot(discord.Client):
 
         # Get the server information using mcstatus
         try:
-            server = mcstatus.JavaServer.lookup("localhost:25565")
+            server = mcstatus.JavaServer.lookup(
+                "localhost:" + str(MC_SERVER_PORT))
             status = server.status()
         except ConnectionRefusedError:
             self.logger.error("Failed to connect to Minecraft server.")
             status = None
 
+        guild = self.get_guild(GUILD_ID)
+        channel = guild.get_channel(GENERAL_CHANNEL_ID)
+
+        if channel:
+            async for message in channel.history():
+                if message.author == self.user:
+                    await message.delete()
+
         # Send the server IP message to the general channel
         server_embed = await self.send_server_ip(channel, status)
 
         # Schedule the status update task
-        self.loop.create_task(self.tasks.status_update_task(channel, server_embed.id))
+        self.loop.create_task(
+            self.tasks.status_update_task(channel, server_embed.id))
 
     async def send_server_ip(self, channel, status):
-        embed = discord.Embed(title="Minecraft Server Status", color=discord.Color.green())
+        embed = discord.Embed(
+            title="Minecraft Server Status", color=discord.Color.green())
         if status is not None:
             embed.add_field(name="Server Status", value="Online", inline=False)
-            embed.add_field(name="Players", value=f"{status.players.online}/{status.players.max}", inline=False)
-            embed.add_field(name="Version", value=status.version.name, inline=False)
-            embed.add_field(name="Address", value=f"`{self.ngrok.url_tunnel}`", inline=False)
+            embed.add_field(
+                name="Players", value=f"{status.players.online}/{status.players.max}", inline=False)
+            embed.add_field(
+                name="Version", value=status.version.name, inline=False)
+            embed.add_field(
+                name="Address", value=f"`{self.ngrok.url_tunnel}`", inline=False)
         else:
-            embed.add_field(name="Server Status", value="Offline", inline=False)
+            embed.add_field(name="Server Status",
+                            value="Offline", inline=False)
 
         message = await channel.send(embed=embed)
         self.logger.info("Sent server IP message to Discord channel.")

@@ -138,3 +138,5 @@ fabric.properties
 __pycache__
 src/test_main.py
 src/config/config_module.py
+src/log/
+.vscode/settings.json
