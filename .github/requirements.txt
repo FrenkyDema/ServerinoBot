@@ -16,7 +16,7 @@ pycodestyle==2.10.0
 pyngrok==6.0.0
 PyYAML==6.0
 schedule==1.2.0
-setuptools==67.6.1
+setuptools==68.1.2
 tomli==2.0.1
 typing-extensions==4.5.0
 yarl==1.8.2
