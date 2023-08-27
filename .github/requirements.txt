@@ -13,7 +13,7 @@ multidict==6.0.4
 pip==23.2.1
 py-cord==2.4.1
 pycodestyle==2.10.0
-pyngrok==5.2.1
+pyngrok==6.0.0
 PyYAML==6.0
 schedule==1.1.0
 setuptools==67.6.1
