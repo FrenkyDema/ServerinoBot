@@ -15,7 +15,7 @@ py-cord==2.4.1
 pycodestyle==2.11.0
 pyngrok==6.0.0
 PyYAML==6.0.1
-schedule==1.2.0
+schedule==1.2.1
 setuptools==68.1.2
 tomli==2.0.1
 typing-extensions==4.7.1
